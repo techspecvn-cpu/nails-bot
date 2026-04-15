@@ -85,9 +85,9 @@ async def handle_message(message: Message):
         await message.answer("Сначала введи дату 🙏 Например: 25 марта")
         return
 
-    user_data[user_id]["date"] = text
-    user_data[user_id]["state"] = "time"
-    await message.answer("Напиши время (например: 14:00)")
+        user_data[user_id]["date"] = text
+        user_data[user_id]["state"] = "time"
+        await message.answer("Напиши время (например: 14:00)")
 
     elif state == "time":
         if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
