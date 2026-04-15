@@ -81,47 +81,46 @@ async def handle_message(message: Message):
         await message.answer("Напиши дату (например: 25 марта)")
 
     elif state == "date":
-        if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
-            await message.answer("Сначала введи дату 🙏 Например: 25 марта")
-            return
-
-        user_data[user_id]["date"] = text
-        user_data[user_id]["state"] = "time"
-        await message.answer("Напиши время (например: 14:00)")
-
-    elif state == "time":
-        if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
-            await message.answer("Сначала введи время 🙏 Например: 14:00")
-            return
-
-        time = normalize_time(text)
-        user_data[user_id]["time"] = time
-
-        data = user_data[user_id]
-
-        # КЛИЕНТУ
-        await message.answer(
-            f"💖 Ты записана!\n\n"
-            f"Имя: {data['name']}\n"
-            f"Услуга: {data['service']}\n"
-            f"Дата: {data['date']}\n"
-            f"Время: {data['time']}\n\n"
-            f"Если нужно отменить — напиши: отмена",
-            reply_markup=main_kb
-        )
-
-        # ТЕБЕ (МАСТЕРУ)
-        await bot.send_message(
-            ADMIN_ID,
-            f"🔥 Новая запись!\n\n"
-            f"Имя: {data['name']}\n"
-            f"Услуга: {data['service']}\n"
-            f"Дата: {data['date']}\n"
-            f"Время: {data['time']}"
-        )
-
+    if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
+        await message.answer("Сначала введи дату 🙏 Например: 25 марта")
         return
 
+    user_data[user_id]["date"] = text
+    user_data[user_id]["state"] = "time"
+    await message.answer("Напиши время (например: 14:00)")
+
+elif state == "time":
+    if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
+        await message.answer("Сначала введи время 🙏 Например: 14:00")
+        return
+
+    time = normalize_time(text)
+    user_data[user_id]["time"] = time
+    user_data[user_id]["state"] = None
+
+    data = user_data[user_id]
+
+    await message.answer(
+        f"💖 Ты записана!\n\n"
+        f"Имя: {data['name']}\n"
+        f"Услуга: {data['service']}\n"
+        f"Дата: {data['date']}\n"
+        f"Время: {data['time']}\n\n"
+        f"Если нужно отменить — напиши: отмена",
+        reply_markup=main_kb
+    )
+
+    await bot.send_message(
+        ADMIN_ID,
+        f"🔥 Новая запись!\n\n"
+        f"Имя: {data['name']}\n"
+        f"Услуга: {data['service']}\n"
+        f"Дата: {data['date']}\n"
+        f"Время: {data['time']}"
+    )
+
+    return
+ 
         elif state == "time":
             if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
                 await message.answer("Сначала введи время 🙏 Например: 14:00")
