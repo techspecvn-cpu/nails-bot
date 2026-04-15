@@ -109,33 +109,33 @@ async def handle_message(message: Message):
             f"Время: {data['time']}"
         )
 
-if text.lower() == "отмена":
-    user_data[user_id]["state"] = None
-    await message.answer("❌ Запись отменена", reply_markup=main_kb)
-    await bot.send_message(ADMIN_ID, "❌ Клиент отменил запись")
+    if text.lower() == "отмена":
+        user_data[user_id]["state"] = None
+        await message.answer("❌ Запись отменена", reply_markup=main_kb)
+        await bot.send_message(ADMIN_ID, "❌ Клиент отменил запись")
 
-elif text == "Поговорить":
-    user_data[user_id]["state"] = "chat"
-    await message.answer("Я рядом 💖 Расскажи, что тебя беспокоит")
+    elif text == "Поговорить":
+        user_data[user_id]["state"] = "chat"
+        await message.answer("Я рядом 💖 Расскажи, что тебя беспокоит")
 
-elif state == "chat":
-    text_lower = text.lower()
+    elif state == "chat":
+        text_lower = text.lower()
 
-    if any(word in text_lower for word in ["нет времени", "занято", "не могу", "окна", "свободно"]):
-        await message.answer("Понимаю 💔 Давай подберём удобное время 🙏 Когда тебе удобно?")
+        if any(word in text_lower for word in ["нет времени", "занято", "не могу", "окна", "свободно"]):
+            await message.answer("Понимаю 💔 Давай подберём удобное время 🙏 Когда тебе удобно?")
     
-    elif any(word in text_lower for word in ["мастер", "свободен", "занят"]):
-        await message.answer("Я уточню по мастеру 💅 Напиши дату, которая тебе подходит")
+        elif any(word in text_lower for word in ["мастер", "свободен", "занят"]):
+            await message.answer("Я уточню по мастеру 💅 Напиши дату, которая тебе подходит")
 
-    elif any(word in text_lower for word in ["цена", "сколько", "стоимость", "дорого"]):
-        await message.answer("Цена зависит от услуги 💅 Напиши, что именно хочешь — подскажу 💖")
+        elif any(word in text_lower for word in ["цена", "сколько", "стоимость", "дорого"]):
+            await message.answer("Цена зависит от услуги 💅 Напиши, что именно хочешь — подскажу 💖")
 
-    elif any(word in text_lower for word in ["давай", "ок", "хорошо"]):
+        elif any(word in text_lower for word in ["давай", "ок", "хорошо"]):
         user_data[user_id]["state"] = "service"
         await message.answer("Отлично 💖 Выбери услугу:", reply_markup=service_kb)
 
-    else:
-        await message.answer("Я рядом 💖 Давай подберём удобную запись")
+        else:
+            await message.answer("Я рядом 💖 Давай подберём удобную запись")
 
 # ЗАПУСК
 async def main():
