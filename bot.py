@@ -22,51 +22,93 @@ async def start(message: Message):
 
 @dp.message()
 async def handle_message(message: Message):
+user_data = {}
+
+ADMIN_ID = 1505361956  # ← ЗАМЕНИ на свой Telegram ID
+
+@dp.message()
+async def handle_message(message: Message):
     user_id = message.from_user.id
-    text = message.text.lower()
+    text = message.text
 
-    state = user_state.get(user_id)
+    if user_id not in user_data:
+        user_data[user_id] = {"state": None}
 
-    if text == "1":
-        user_state[user_id] = "waiting_date"
-        await message.answer("Отлично 💅 Напиши удобную дату")
+    state = user_data[user_id].get("state")
 
-    elif state == "waiting_date":
-        user_state[user_id] = {"step": "waiting_time", "date": message.text}
-        await message.answer("Теперь напиши удобное время ⏰")
-
-    elif isinstance(state, dict) and state.get("step") == "waiting_time":
-        date = state["date"]
-        time = message.text
-        user_state[user_id] = None
-
+    # СТАРТ
+    if text == "/start":
+        user_data[user_id] = {"state": None}
         await message.answer(
-            f"Записала тебя 💖\nДата: {date}\nВремя: {time}\n\nЖдём тебя 🌸"
+            "Привет! 💅\nЯ бот записи\n\n1 — Записаться\n2 — Поговорить"
         )
 
+    elif text == "1":
+        user_data[user_id]["state"] = "name"
+        await message.answer("Как тебя зовут?")
+
+    elif state == "name":
+        user_data[user_id]["name"] = text
+        user_data[user_id]["state"] = "service"
+
+        await message.answer(
+            "Выбери услугу:\nМаникюр / Педикюр / Наращивание"
+        )
+
+    elif state == "service":
+        user_data[user_id]["service"] = text
+        user_data[user_id]["state"] = "date"
+        await message.answer("Напиши дату (например: 25 марта)")
+
+    elif state == "date":
+        user_data[user_id]["date"] = text
+        user_data[user_id]["state"] = "time"
+        await message.answer("Напиши время")
+
+    elif state == "time":
+        user_data[user_id]["time"] = text
+        user_data[user_id]["state"] = None
+
+        data = user_data[user_id]
+
+        # сообщение клиенту
+        await message.answer(
+            f"💖 Ты записана!\n\n"
+            f"Имя: {data['name']}\n"
+            f"Услуга: {data['service']}\n"
+            f"Дата: {data['date']}\n"
+            f"Время: {data['time']}\n\n"
+            f"Если нужно отменить — напиши: отмена"
+        )
+
+        # сообщение мастеру
+        await bot.send_message(
+            ADMIN_ID,
+            f"🔥 Новая запись!\n\n"
+            f"Имя: {data['name']}\n"
+            f"Услуга: {data['service']}\n"
+            f"Дата: {data['date']}\n"
+            f"Время: {data['time']}"
+        )
+
+    elif text.lower() == "отмена":
+        await message.answer("❌ Запись отменена")
+        await bot.send_message(ADMIN_ID, "❌ Клиент отменил запись")
+
     elif text == "2":
-        user_state[user_id] = "chat"
+        user_data[user_id]["state"] = "chat"
         await message.answer("Я рядом 💖 Расскажи, что тебя беспокоит")
 
     elif state == "chat":
-            if "груст" in text:
-        await message.answer("Мне жаль, что тебе так 😔 Хочешь поговорить об этом?")
-        
-    elif "скуч" in text:
-        await message.answer("Скука — это сигнал ✨ Может, пора порадовать себя маникюром? 💅")
-        
-    elif "нет времени" in text or "занята" in text or "нет записи" in text:
-        await message.answer("Понимаю 😔 Давай попробуем найти для тебя окошко 💅 Напиши удобный день")
-
-    elif "не могу записаться" in text:
-        await message.answer("Давай я помогу 💖 Напиши дату и время — подберём лучший вариант")
-
-    else:
-        await message.answer("Я слушаю тебя 🤍 Расскажи подробнее")
+        if "нет времени" in text.lower():
+            await message.answer(
+                "Понимаю 💔 Давай подберём другое время 🙏"
+            )
+        else:
+            await message.answer("Я тебя слышу 💖 Расскажи подробнее")
 
     else:
         await message.answer("Напиши 1 — запись или 2 — поговорить 😊")
-
 
 async def main():
     await dp.start_polling(bot)
