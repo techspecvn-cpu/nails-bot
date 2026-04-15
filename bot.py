@@ -121,10 +121,10 @@ async def handle_message(message: Message):
 
     return
  
-        elif state == "time":
-            if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
-                await message.answer("Сначала введи время 🙏 Например: 14:00")
-                return
+    elif state == "time"
+        if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
+            await message.answer("Сначала введи время 🙏 Например: 14:00")
+            return
 
             user_data[user_id]["time"] = text
             user_data[user_id]["state"] = None
