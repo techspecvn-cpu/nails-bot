@@ -83,7 +83,7 @@ async def handle_message(message: Message):
     await message.answer("Напиши время")
     
 
-    elif state == "time":
+    if state == "time":
         if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
             await message.answer("Сейчас нужно ввести время 🙏 Например: 14:00")
             return
