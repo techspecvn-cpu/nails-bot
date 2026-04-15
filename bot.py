@@ -109,16 +109,16 @@ async def handle_message(message: Message):
             f"Время: {data['time']}"
         )
 
-    elif text.lower() == "отмена":
+    if text.lower() == "отмена":
         user_data[user_id]["state"] = None
         await message.answer("❌ Запись отменена", reply_markup=main_kb)
         await bot.send_message(ADMIN_ID, "❌ Клиент отменил запись")
 
-    elif text == "Поговорить":
+    if text == "Поговорить":
         user_data[user_id]["state"] = "chat"
         await message.answer("Я рядом 💖 Расскажи, что тебя беспокоит")
 
-elif state == "chat":
+    elif state == "chat":
     text_lower = text.lower()
 
     if any(word in text_lower for word in ["нет времени", "занято", "не могу", "окна", "свободно"]):
