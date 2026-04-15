@@ -74,7 +74,7 @@ async def handle_message(message: Message):
         await message.answer("Сейчас нужно ввести дату 🙏 Например: 25 марта")
         return
 
-    if len(text) < 3:
+        if len(text) < 3:
         await message.answer("Напиши нормальную дату 🙏 Например: 25 марта")
         return
 
@@ -83,7 +83,7 @@ async def handle_message(message: Message):
     await message.answer("Напиши время")    
 
     elif state == "time":
-        if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
+       if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
         await message.answer("Сейчас нужно ввести время 🙏 Например: 14:00")
         return
 
