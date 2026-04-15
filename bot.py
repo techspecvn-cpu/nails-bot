@@ -49,12 +49,20 @@ async def handle_message(message: Message):
         await message.answer("Я рядом 💖 Расскажи, что тебя беспокоит")
 
     elif state == "chat":
-        if "груст" in text:
-            await message.answer("Мне жаль, что тебе так 😔 Хочешь поговорить об этом?")
-        elif "скуч" in text:
-            await message.answer("Скука — это сигнал ✨ Может, пора порадовать себя маникюром? 💅")
-        else:
-            await message.answer("Я слушаю тебя 🤍 Расскажи подробнее")
+            if "груст" in text:
+        await message.answer("Мне жаль, что тебе так 😔 Хочешь поговорить об этом?")
+        
+    elif "скуч" in text:
+        await message.answer("Скука — это сигнал ✨ Может, пора порадовать себя маникюром? 💅")
+        
+    elif "нет времени" in text or "занята" in text or "нет записи" in text:
+        await message.answer("Понимаю 😔 Давай попробуем найти для тебя окошко 💅 Напиши удобный день")
+
+    elif "не могу записаться" in text:
+        await message.answer("Давай я помогу 💖 Напиши дату и время — подберём лучший вариант")
+
+    else:
+        await message.answer("Я слушаю тебя 🤍 Расскажи подробнее")
 
     else:
         await message.answer("Напиши 1 — запись или 2 — поговорить 😊")
