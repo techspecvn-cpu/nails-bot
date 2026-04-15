@@ -33,14 +33,7 @@ async def handle_message(message: Message):
 
     state = user_data[user_id].get("state")
 
-    # СТАРТ
-    if text == "/start":
-        user_data[user_id] = {"state": None}
-        await message.answer(
-            "Привет! 💅\nЯ бот записи\n\n1 — Записаться\n2 — Поговорить"
-        )
-
-    elif text == "1" and state is None:
+    if text == "1" and state is None:
         user_data[user_id]["state"] = "name"
         await message.answer("Как тебя зовут?")
 
@@ -92,7 +85,7 @@ async def handle_message(message: Message):
         await message.answer("❌ Запись отменена")
         await bot.send_message(ADMIN_ID, "❌ Клиент отменил запись")
 
-    elif text == "2":
+    elif text == "2" and state is None:
         user_data[user_id]["state"] = "chat"
         await message.answer("Я рядом 💖 Расскажи, что тебя беспокоит")
 
