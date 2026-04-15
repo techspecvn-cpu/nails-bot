@@ -118,20 +118,25 @@ async def handle_message(message: Message):
         user_data[user_id]["state"] = "chat"
         await message.answer("Я рядом 💖 Расскажи, что тебя беспокоит")
 
-    elif state == "chat":
-        text_lower = text.lower()
+elif state == "chat":
+    text_lower = text.lower()
 
-    if "нет времени" in text_lower or "занято" in text_lower:
-        await message.answer("Понимаю 💔 Давай подберём другое время 🙏")
+    if any(word in text_lower for word in ["нет времени", "занято", "не могу", "окна", "свободно"]):
+        await message.answer("Понимаю 💔 Давай подберём удобное время 🙏 Когда тебе удобно?")
+    
+    elif any(word in text_lower for word in ["мастер", "свободен", "занят"]):
+        await message.answer("Я уточню по мастеру 💅 Напиши дату, которая тебе подходит")
 
-    elif "дорого" in text_lower:
-        await message.answer("Понимаю 💅 У нас отличное качество и аккуратная работа 💖")
+    elif any(word in text_lower for word in ["цена", "сколько", "стоимость", "дорого"]):
+        await message.answer("Цена зависит от услуги 💅 Напиши, что именно хочешь — подскажу 💖")
 
-    elif "не могу" in text_lower:
-        await message.answer("Понимаю 💔 Давай найдём удобный вариант 🙏")
+    elif any(word in text_lower for word in ["давай", "ок", "хорошо"]):
+        user_data[user_id]["state"] = "service"
+        await message.answer("Отлично 💖 Выбери услугу:", reply_markup=service_kb)
 
     else:
-        await message.answer("Я тебя слышу 💖 Расскажи подробнее")
+        await message.answer("Я рядом 💖 Давай подберём удобную запись")
+
 # ЗАПУСК
 async def main():
     await dp.start_polling(bot)
