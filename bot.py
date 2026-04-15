@@ -1,9 +1,9 @@
 import asyncio
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.filters import CommandStart
 
-TOKEN = "8452593173:AAHSfC20tszMT3la1-9p0AZoLY0DCcGwO3E"
+TOKEN = "ТВОЙ_ТОКЕН_СЮДА"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -11,6 +11,7 @@ dp = Dispatcher()
 user_data = {}
 ADMIN_ID = 1505361956  # замени если нужно
 
+# КЛАВИАТУРЫ
 main_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="Записаться")],
@@ -29,6 +30,7 @@ service_kb = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
+# СТАРТ
 @dp.message(CommandStart())
 async def start(message: Message):
     await message.answer(
@@ -36,21 +38,19 @@ async def start(message: Message):
         reply_markup=main_kb
     )
 
+# ОСНОВНАЯ ЛОГИКА
 @dp.message()
 async def handle_message(message: Message):
     user_id = message.from_user.id
-    text = message.text or ""   # ✅ защита от None
+    text = message.text
 
     if user_id not in user_data:
         user_data[user_id] = {"state": None}
 
     state = user_data[user_id].get("state")
 
-    if text == "/start":
-        user_data[user_id] = {"state": None}
-        await message.answer("Привет 💅", reply_markup=main_kb)
-
-    elif text == "Записаться":
+    # НАЧАЛО ЗАПИСИ
+    if text == "Записаться" and state is None:
         user_data[user_id]["state"] = "name"
         await message.answer("Как тебя зовут?")
 
@@ -62,7 +62,7 @@ async def handle_message(message: Message):
     elif state == "service":
         if text == "Отмена":
             user_data[user_id]["state"] = None
-            await message.answer("Отменено", reply_markup=main_kb)
+            await message.answer("Запись отменена ❌", reply_markup=main_kb)
             return
 
         user_data[user_id]["service"] = text
@@ -71,48 +71,46 @@ async def handle_message(message: Message):
 
     elif state == "date":
         if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
-            await message.answer("Сейчас нужно ввести дату 🙏 Например: 25 марта")
+            await message.answer("Сначала введи дату 🙏 Например: 25 марта")
             return
 
-    if len(text) < 3:
-        await message.answer("Напиши нормальную дату 🙏 Например: 25 марта")
-        return
+        user_data[user_id]["date"] = text
+        user_data[user_id]["state"] = "time"
+        await message.answer("Напиши время (например: 14:00)")
 
-    user_data[user_id]["date"] = text
-    user_data[user_id]["state"] = "time"
-    await message.answer("Напиши время")
-    
-
-    if state == "time":
+    elif state == "time":
         if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
-            await message.answer("Сейчас нужно ввести время 🙏 Например: 14:00")
+            await message.answer("Сначала введи время 🙏 Например: 14:00")
             return
 
-    user_data[user_id]["time"] = text
-    user_data[user_id]["state"] = None
+        user_data[user_id]["time"] = text
+        user_data[user_id]["state"] = None
 
-    data = user_data[user_id]
+        data = user_data[user_id]
 
-    await message.answer(
-        f"💖 Ты записана!\n\n"
-        f"Имя: {data['name']}\n"
-        f"Услуга: {data['service']}\n"
-        f"Дата: {data['date']}\n"
-        f"Время: {data['time']}\n\n"
-        f"Если нужно отменить — напиши: отмена",
-        reply_markup=main_kb
-    )
+        # КЛИЕНТУ
+        await message.answer(
+            f"💖 Ты записана!\n\n"
+            f"Имя: {data['name']}\n"
+            f"Услуга: {data['service']}\n"
+            f"Дата: {data['date']}\n"
+            f"Время: {data['time']}\n\n"
+            f"Если нужно отменить — напиши: отмена",
+            reply_markup=main_kb
+        )
 
-    await bot.send_message(
-        ADMIN_ID,
-        f"🔥 Новая запись!\n\n"
-        f"Имя: {data['name']}\n"
-        f"Услуга: {data['service']}\n"
-        f"Дата: {data['date']}\n"
-        f"Время: {data['time']}"
-    )
-    
+        # ТЕБЕ (МАСТЕРУ)
+        await bot.send_message(
+            ADMIN_ID,
+            f"🔥 Новая запись!\n\n"
+            f"Имя: {data['name']}\n"
+            f"Услуга: {data['service']}\n"
+            f"Дата: {data['date']}\n"
+            f"Время: {data['time']}"
+        )
+
     elif text.lower() == "отмена":
+        user_data[user_id]["state"] = None
         await message.answer("❌ Запись отменена", reply_markup=main_kb)
         await bot.send_message(ADMIN_ID, "❌ Клиент отменил запись")
 
@@ -121,15 +119,12 @@ async def handle_message(message: Message):
         await message.answer("Я рядом 💖 Расскажи, что тебя беспокоит")
 
     elif state == "chat":
-        if "нет времени" in text.lower():
-            await message.answer("Понимаю 💔 Давай подберём другое время 🙏")
-        else:
-            await message.answer("Я тебя слышу 💖 Расскажи подробнее")
+        await message.answer("Я тебя слышу 💖 Расскажи подробнее")
 
     else:
         await message.answer("Выбери кнопку ниже 👇", reply_markup=main_kb)
 
-
+# ЗАПУСК
 async def main():
     await dp.start_polling(bot)
 
