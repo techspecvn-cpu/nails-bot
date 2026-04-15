@@ -119,11 +119,19 @@ async def handle_message(message: Message):
         await message.answer("Я рядом 💖 Расскажи, что тебя беспокоит")
 
     elif state == "chat":
-        await message.answer("Я тебя слышу 💖 Расскажи подробнее")
+        text_lower = text.lower()
+
+    if "нет времени" in text_lower or "занято" in text_lower:
+        await message.answer("Понимаю 💔 Давай подберём другое время 🙏")
+
+    elif "дорого" in text_lower:
+        await message.answer("Понимаю 💅 У нас отличное качество и аккуратная работа 💖")
+
+    elif "не могу" in text_lower:
+        await message.answer("Понимаю 💔 Давай найдём удобный вариант 🙏")
 
     else:
-        await message.answer("Выбери кнопку ниже 👇", reply_markup=main_kb)
-
+        await message.answer("Я тебя слышу 💖 Расскажи подробнее")
 # ЗАПУСК
 async def main():
     await dp.start_polling(bot)
