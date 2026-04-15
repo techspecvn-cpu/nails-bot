@@ -20,10 +20,7 @@ async def start(message: Message):
     )
 
 
-@dp.message()
-async def handle_message(message: Message):
 user_data = {}
-
 ADMIN_ID = 1505361956  # ← ЗАМЕНИ на свой Telegram ID
 
 @dp.message()
