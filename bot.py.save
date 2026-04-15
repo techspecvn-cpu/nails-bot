@@ -1,0 +1,40 @@
+8452593173:AAHSfC20tszMT3la1-9p0AZoLY0DCcGwO3E8452593173:AAHSfC20tszMT3la1-9p0AZoLY0DCcGwO3Eimport asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.types import Message
+from aiogram.filters import CommandStart
+
+TOKEN = "8452593173:AAE-LyHgDxGCsMnnMIFPPPS79Nyvq3je0GI"
+
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
+
+
+@dp.message(CommandStart())
+async def start(message: Message):
+    await message.answer(
+        "Привет! 💅\n"
+        "Я бот записи на маникюр и поддержки 💖\n\n"
+        "Напиши:\n"
+        "1 — Записаться\n"
+        "2 — Поговорить"
+    )
+
+
+@dp.message()
+async def handle_message(message: Message):
+    text = message.text
+
+    if text == "1":
+        await message.answer("Напиши удобную дату и время 📅")
+    elif text == "2":
+        await message.answer("Расскажи, что тебя беспокоит 💬")
+    else:
+        await message.answer("Я пока понимаю только цифры 1 и 2 😊")
+
+
+async def main():
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
