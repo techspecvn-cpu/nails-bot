@@ -1,3 +1,14 @@
+def normalize_time(text):
+    text = text.lower().replace("в ", "").replace("часов", "").replace("час", "").strip()
+
+    if ":" in text:
+        return text
+
+    if text.isdigit():
+        return f"{text}:00"
+
+    return text
+
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
@@ -83,8 +94,8 @@ async def handle_message(message: Message):
             await message.answer("Сначала введи время 🙏 Например: 14:00")
             return
 
-        user_data[user_id]["time"] = text
-        user_data[user_id]["state"] = None
+        time = normalize_time(text)
+        user_data[user_id]["time"] = time
 
         data = user_data[user_id]
 
