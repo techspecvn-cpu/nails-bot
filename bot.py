@@ -89,34 +89,34 @@ async def handle_message(message: Message):
     user_data[user_id]["state"] = "time"
     await message.answer("Напиши время (например: 14:00)")
 
-elif state == "time":
-    if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
-        await message.answer("Сначала введи время 🙏 Например: 14:00")
-        return
+    elif state == "time":
+        if text in ["Записаться", "Поговорить", "Маникюр", "Педикюр", "Наращивание"]:
+            await message.answer("Сначала введи время 🙏 Например: 14:00")
+            return
 
-    time = normalize_time(text)
-    user_data[user_id]["time"] = time
-    user_data[user_id]["state"] = None
+        time = normalize_time(text)
+        user_data[user_id]["time"] = time
+        user_data[user_id]["state"] = None
 
-    data = user_data[user_id]
+        data = user_data[user_id]
 
-    await message.answer(
-        f"💖 Ты записана!\n\n"
-        f"Имя: {data['name']}\n"
-        f"Услуга: {data['service']}\n"
-        f"Дата: {data['date']}\n"
-        f"Время: {data['time']}\n\n"
-        f"Если нужно отменить — напиши: отмена",
-        reply_markup=main_kb
+        await message.answer(
+            f"💖 Ты записана!\n\n"
+            f"Имя: {data['name']}\n"
+            f"Услуга: {data['service']}\n"
+            f"Дата: {data['date']}\n"
+            f"Время: {data['time']}\n\n"
+            f"Если нужно отменить — напиши: отмена",
+            reply_markup=main_kb
     )
 
-    await bot.send_message(
-        ADMIN_ID,
-        f"🔥 Новая запись!\n\n"
-        f"Имя: {data['name']}\n"
-        f"Услуга: {data['service']}\n"
-        f"Дата: {data['date']}\n"
-        f"Время: {data['time']}"
+        await bot.send_message(
+            ADMIN_ID,
+            f"🔥 Новая запись!\n\n"
+            f"Имя: {data['name']}\n"
+            f"Услуга: {data['service']}\n"
+            f"Дата: {data['date']}\n"
+            f"Время: {data['time']}"
     )
 
     return
