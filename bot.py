@@ -70,10 +70,14 @@ async def handle_message(message: Message):
         await message.answer("Напиши дату (например: 25 марта)")
 
     elif state == "date":
-        user_data[user_id]["date"] = text
-        user_data[user_id]["state"] = "time"
-        await message.answer("Напиши время")
+    if len(text) < 3:
+        await message.answer("Напиши нормальную дату 🙏 Например: 25 марта")
+        return
 
+    user_data[user_id]["date"] = text
+    user_data[user_id]["state"] = "time"
+    await message.answer("Напиши время")
+    
     elif state == "time":
         user_data[user_id]["time"] = text
         user_data[user_id]["state"] = None
