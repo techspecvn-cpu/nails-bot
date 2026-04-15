@@ -131,8 +131,8 @@ async def handle_message(message: Message):
             await message.answer("Цена зависит от услуги 💅 Напиши, что именно хочешь — подскажу 💖")
 
         elif any(word in text_lower for word in ["давай", "ок", "хорошо"]):
-        user_data[user_id]["state"] = "service"
-        await message.answer("Отлично 💖 Выбери услугу:", reply_markup=service_kb)
+            user_data[user_id]["state"] = "service"
+            await message.answer("Отлично 💖 Выбери услугу:", reply_markup=service_kb)
 
         else:
             await message.answer("Я рядом 💖 Давай подберём удобную запись")
