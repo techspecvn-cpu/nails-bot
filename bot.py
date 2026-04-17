@@ -117,7 +117,7 @@ async def handle_message(message: Message):
             f"Услуга: {data['service']}\n"
             f"Дата: {data['date']}\n"
             f"Время: {data['time']}"
-    )
+        )
 
     return
  
