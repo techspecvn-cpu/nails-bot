@@ -20,7 +20,7 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 user_data = {}
-ADMIN_ID = 869535397  # замени если нужно
+ADMIN_ID = 1366158514  # замени если нужно
 
 # КЛАВИАТУРЫ
 main_kb = ReplyKeyboardMarkup(
